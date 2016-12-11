@@ -1,8 +1,43 @@
-console.log("Hello");
+var net = require('net');
 
-var http = require('http');
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World\n');
-}).listen(8090, '127.0.0.1');
-console.log('Server running at http://127.0.0.1:8090/');
+const connections = [];
+
+var server = net.createServer((conn) => {
+    connections.push(conn);
+    const remoteAddress = conn.remoteAddress + ':' + conn.remotePort; 
+    console.log('connected: ' + remoteAddress);
+    conn.write('Welcome to chat. No of connected clients: ' + connections.length + '\n');
+
+    conn.setEncoding('utf8');
+
+    conn.on('data', (data) => {
+        console.log('connection data from %s: %j', remoteAddress, data);
+        connections.forEach( (c) => {
+            if (conn != c) {
+                c.write(data);  
+            }
+        });
+    });
+
+    conn.once('close', () => {
+        console.log('connection from %s closed', remoteAddress);
+    });
+
+    conn.on('error', (err) => {
+        console.log('connection %s error: %s', remoteAddress, err.message);
+    });
+
+    conn.on('end', () => {
+      console.log('client disconnected');
+    });
+});
+
+server.on('error', (err) => {
+    console.log('[ERROR]:');
+    throw err;
+});
+
+
+server.listen(1337, () => {
+    console.log('server listening to %j', server.address());
+});
