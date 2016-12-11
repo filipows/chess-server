@@ -29,7 +29,9 @@ var server = net.createServer((conn) => {
 
     conn.on('end', () => {
       console.log('client disconnected');
-    });
+      let idx = connections.findIndex( (c) => c == conn);
+      connections.splice(idx, 1);
+  });
 });
 
 server.on('error', (err) => {
