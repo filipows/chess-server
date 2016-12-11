@@ -1,0 +1,11 @@
+{
+  "name": "chess-server",
+  "version": "0.0.1",
+  "description": "Simple socket TCP/IP server for our chess game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "filipows",
+  "license": "ISC"
+}
